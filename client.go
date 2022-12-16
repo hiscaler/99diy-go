@@ -22,10 +22,9 @@ const (
 
 type Diy99 struct {
 	config     *config.Config // 配置
-	logger     Logger
-	httpClient *resty.Client // Resty Client
-	forceToken bool          // 强制获取 Token
-	Services   services      // API Services
+	logger     Logger         // 日志
+	httpClient *resty.Client  // Resty Client
+	Services   services       // API Services
 }
 
 func NewDiy99(cfg config.Config) *Diy99 {
