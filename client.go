@@ -74,7 +74,7 @@ func NewDiy99(cfg config.Config) *Diy99 {
 		httpClient: diy99Client.httpClient,
 	}
 	diy99Client.Services = services{
-		WebImageEditor: (webImageEditor)(xService),
+		WebImageEditor: (webImageEditorService)(xService),
 	}
 	return diy99Client
 }

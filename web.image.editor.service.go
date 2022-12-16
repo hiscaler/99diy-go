@@ -45,6 +45,9 @@ func (s webImageEditorService) PushOrders(req WebImageEditorOrderRequest) error 
 		return err
 	}
 
+	for i := range req.Items {
+		req.Items[i].CallbackURL = req.CallbackURL
+	}
 	res := struct {
 		Data struct{} `json:"data"`
 	}{}
