@@ -15,16 +15,18 @@ const (
 type WebImageEditorOrderItemData struct {
 	Type    string `json:"type"`
 	Font    string `json:"font"`
+	Color   string `json:"color"`
 	Content string `json:"content"`
 	URL     string `json:"url"`
 }
 
 type WebImageEditorOrderItem struct {
-	OrderNumber string                        `json:"order_number"`
-	OrderKey    string                        `json:"order_key"`
-	PreviewURL  string                        `json:"preview_url"`
-	CallbackURL string                        `json:"callback_url"`
-	Data        []WebImageEditorOrderItemData `json:"data"`
+	OrderNumber           string                        `json:"orderNumber"` // 订单号
+	OrderKey              string                        `json:"key"`         // 订单项 ID
+	TemplateId            int                           `json:"templateId"`  // 模板
+	PreviewViewPictureURL string                        `json:"preViewPic"`  // 预览图
+	CallbackURL           string                        `json:"callBackUrl"` // 回调地址
+	Data                  []WebImageEditorOrderItemData `json:"data"`        // 订单项数据
 }
 
 type WebImageEditorOrderRequest struct {
@@ -49,11 +51,11 @@ func (s webImageEditorService) PushOrders(req WebImageEditorOrderRequest) error 
 		req.Items[i].CallbackURL = req.CallbackURL
 	}
 	res := struct {
-		Data struct{} `json:"data"`
+		Data interface{} `json:"data"`
 	}{}
 	resp, err := s.httpClient.R().
-		SetBody(req).
-		Post("/orders/createOrder")
+		SetBody(req.Items).
+		Post("/order/createOrders")
 	if err != nil {
 		return err
 	}

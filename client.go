@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/hiscaler/99diy-go/config"
-	"github.com/hiscaler/gox/bytex"
 	"strings"
 	"time"
 )
@@ -17,7 +16,7 @@ const (
 
 const (
 	OK                   = 200 // 无错误
-	ServiceNotFoundError = 400 // 服务不存在
+	ServiceNotFoundError = 404 // 服务不存在
 	InternalError        = 500 // 内部错误，数据库异常
 )
 
@@ -52,15 +51,19 @@ func NewDiy99(cfg config.Config) *Diy99 {
 		SetTimeout(time.Duration(cfg.Timeout) * time.Second).
 		OnAfterResponse(func(client *resty.Client, response *resty.Response) (err error) {
 			if response.IsError() {
-				return fmt.Errorf("%s: %s", response.Status(), bytex.ToString(response.Body()))
-			}
-
-			r := struct {
-				Code    int    `json:"code"`
-				Message string `json:"message"`
-			}{}
-			if err = json.Unmarshal(response.Body(), &r); err == nil {
-				err = ErrorWrap(r.Code, r.Message)
+				r := struct {
+					Status int    `json:"status"`
+					Msg    string `json:"msg,omitempty"`
+					Error  string `json:"error,omitempty"`
+					Path   string `json:"path"`
+				}{}
+				if err = json.Unmarshal(response.Body(), &r); err == nil {
+					errorMessage := r.Msg
+					if errorMessage == "" {
+						errorMessage = r.Error
+					}
+					err = ErrorWrap(r.Status, fmt.Sprintf("[ %s ] %s", r.Path, errorMessage))
+				}
 			}
 			return
 		}).
@@ -100,7 +103,9 @@ func ErrorWrap(code int, message string) error {
 
 	switch code {
 	case ServiceNotFoundError:
-		message = "服务不存在"
+		if message == "" {
+			message = "服务不存在"
+		}
 	default:
 		if code == InternalError {
 			if message == "" {
