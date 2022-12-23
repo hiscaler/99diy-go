@@ -30,13 +30,11 @@ type WebImageEditorOrderItem struct {
 }
 
 type WebImageEditorOrderRequest struct {
-	CallbackURL string                    `json:"callback_url"`
-	Items       []WebImageEditorOrderItem `json:"items"`
+	Items []WebImageEditorOrderItem `json:"items"`
 }
 
 func (m WebImageEditorOrderRequest) Validate() error {
 	return validation.ValidateStruct(&m,
-		validation.Field(&m.CallbackURL, validation.Required.Error("回调地址不能为空")),
 		validation.Field(&m.Items, validation.Required.Error("订单项不能为空")),
 	)
 }
@@ -47,9 +45,6 @@ func (s webImageEditorService) PushOrders(req WebImageEditorOrderRequest) error 
 		return err
 	}
 
-	for i := range req.Items {
-		req.Items[i].CallbackURL = req.CallbackURL
-	}
 	res := struct {
 		Data interface{} `json:"data"`
 	}{}

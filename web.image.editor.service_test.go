@@ -9,13 +9,13 @@ func Test_webImageEditorService_PushOrders(t *testing.T) {
 		wantErr bool
 	}{
 		{"tag1", WebImageEditorOrderRequest{
-			CallbackURL: "https://www.example.com/callback",
 			Items: []WebImageEditorOrderItem{
 				{
 					OrderNumber:           "PO001",
 					OrderKey:              "1",
 					TemplateId:            1,
 					PreviewViewPictureURL: "https://www.example.com/1.jpg",
+					CallbackURL:           "https://api.example.com/callback",
 					Data: []WebImageEditorOrderItemData{
 						{Type: TextType, Font: "Arial", Color: "#000000", Content: "Hello"},
 						{Type: ImageType, URL: "https://www.example.com/2.jpg"},
