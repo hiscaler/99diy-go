@@ -23,7 +23,7 @@ type WebImageEditorOrderItemData struct {
 type WebImageEditorOrderItem struct {
 	OrderNumber           string                        `json:"orderNumber"` // 订单号
 	OrderKey              string                        `json:"key"`         // 订单项 ID
-	TemplateId            int                           `json:"templateId"`  // 模板
+	TemplateId            int                           `json:"templetId"`   // 模板
 	PreviewViewPictureURL string                        `json:"preViewPic"`  // 预览图
 	CallbackURL           string                        `json:"callBackUrl"` // 回调地址
 	Data                  []WebImageEditorOrderItemData `json:"data"`        // 订单项数据
