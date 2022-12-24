@@ -1,8 +1,11 @@
 package diy99
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 )
 
 type webImageEditorService service
@@ -13,11 +16,21 @@ const (
 )
 
 type WebImageEditorOrderItemData struct {
-	Type    string `json:"type"`
-	Font    string `json:"font"`
-	Color   string `json:"color"`
-	Content string `json:"content"`
-	URL     string `json:"url"`
+	Type    string `json:"type"`    // 资源类型
+	Font    string `json:"font"`    // 字体
+	Color   string `json:"color"`   // 字体颜色
+	Content string `json:"content"` // 定制内容
+	URL     string `json:"url"`     // 图片地址
+}
+
+func (m WebImageEditorOrderItemData) Validate() error {
+	return validation.ValidateStruct(&m,
+		validation.Field(&m.Type, validation.Required.Error("资源类型不能为空"), validation.In(ImageType, TextType).Error("无效的资源类型")),
+		validation.Field(&m.Font, validation.When(m.Type == TextType, validation.Required.Error("字体不能为空"))),
+		validation.Field(&m.Color, validation.When(m.Type == TextType, validation.Required.Error("字体颜色不能为空"))),
+		validation.Field(&m.Content, validation.When(m.Type == TextType, validation.Required.Error("定制内容不能为空"))),
+		validation.Field(&m.URL, validation.When(m.Type == ImageType, validation.Required.Error("图片地址不能为空"), is.URL.Error("无效的图片地址"))),
+	)
 }
 
 type WebImageEditorOrderItem struct {
@@ -29,6 +42,23 @@ type WebImageEditorOrderItem struct {
 	Data                  []WebImageEditorOrderItemData `json:"data"`        // 订单项数据
 }
 
+func (m WebImageEditorOrderItem) Validate() error {
+	return validation.ValidateStruct(&m,
+		validation.Field(&m.OrderNumber, validation.Required.Error("订单号不能为空")),
+		validation.Field(&m.OrderKey, validation.Required.Error("订单项目 ID 不能为空")),
+		validation.Field(&m.TemplateId, validation.Required.Error("模板不能为空")),
+		validation.Field(&m.PreviewViewPictureURL,
+			validation.Required.Error("预览图不能为空"),
+			is.URL.Error("无效的预览图地址"),
+		),
+		validation.Field(&m.CallbackURL,
+			validation.Required.Error("回调地址不能为空"),
+			is.URL.Error("无效的回调地址"),
+		),
+		validation.Field(&m.Data, validation.Required.Error("订单项数据不能为空")),
+	)
+}
+
 type WebImageEditorOrderRequest struct {
 	Items []WebImageEditorOrderItem `json:"items"`
 }
@@ -36,6 +66,13 @@ type WebImageEditorOrderRequest struct {
 func (m WebImageEditorOrderRequest) Validate() error {
 	return validation.ValidateStruct(&m,
 		validation.Field(&m.Items, validation.Required.Error("订单项不能为空")),
+		validation.Field(&m.Items, validation.When(len(m.Items) > 0, validation.Each(validation.WithContext(func(ctx context.Context, value interface{}) error {
+			if item, ok := value.(WebImageEditorOrderItem); !ok {
+				return errors.New("无效的数据")
+			} else {
+				return item.Validate()
+			}
+		})))),
 	)
 }
 
