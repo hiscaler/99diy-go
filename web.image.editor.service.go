@@ -4,15 +4,21 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
+	"regexp"
 )
 
 type webImageEditorService service
 
 const (
-	ImageType = "image"
-	TextType  = "text"
+	ImageType = "image" // 图片
+	TextType  = "text"  // 文本
+)
+
+const (
+	MugTemplateId = 1 // 马克杯模板
 )
 
 type WebImageEditorOrderItemData struct {
@@ -27,7 +33,19 @@ func (m WebImageEditorOrderItemData) Validate() error {
 	return validation.ValidateStruct(&m,
 		validation.Field(&m.Type, validation.Required.Error("资源类型不能为空"), validation.In(ImageType, TextType).Error("无效的资源类型")),
 		validation.Field(&m.Font, validation.When(m.Type == TextType, validation.Required.Error("字体不能为空"))),
-		validation.Field(&m.Color, validation.When(m.Type == TextType, validation.Required.Error("字体颜色不能为空"))),
+		validation.Field(&m.Color, validation.When(m.Type == TextType, validation.Required.Error("字体颜色不能为空"),
+			validation.WithContext(func(ctx context.Context, value interface{}) error {
+				s, ok := value.(string)
+				if !ok {
+					return errors.New("无效的字体颜色值")
+				}
+				if !regexp.MustCompile("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$").MatchString(s) {
+					return fmt.Errorf("无效的字体颜色值: %s", s)
+				}
+				return nil
+			}),
+		)),
+
 		validation.Field(&m.Content, validation.When(m.Type == TextType, validation.Required.Error("定制内容不能为空"))),
 		validation.Field(&m.URL, validation.When(m.Type == ImageType, validation.Required.Error("图片地址不能为空"), is.URL.Error("无效的图片地址"))),
 	)
@@ -48,7 +66,7 @@ func (m WebImageEditorOrderItem) Validate() error {
 		validation.Field(&m.OrderKey, validation.Required.Error("订单项目 ID 不能为空")),
 		validation.Field(&m.TemplateId, validation.Required.Error("模板不能为空")),
 		validation.Field(&m.PreviewViewPictureURL,
-			validation.Required.Error("预览图不能为空"),
+			validation.Required.Error("预览图地址不能为空"),
 			is.URL.Error("无效的预览图地址"),
 		),
 		validation.Field(&m.CallbackURL,
