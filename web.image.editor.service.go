@@ -96,23 +96,34 @@ func (m WebImageEditorOrderRequest) Validate() error {
 }
 
 // PushOrders 推送订单
-func (s webImageEditorService) PushOrders(req WebImageEditorOrderRequest) error {
-	if err := req.Validate(); err != nil {
-		return err
+func (s webImageEditorService) PushOrders(req WebImageEditorOrderRequest) (orderId int, err error) {
+	if err = req.Validate(); err != nil {
+		return
 	}
 
 	res := struct {
-		Data interface{} `json:"data"`
+		Result  bool    `json:"result"`
+		Code    int     `json:"code"`
+		Message *string `json:"msg"`
+		Data    int     `json:"data"`
 	}{}
 	resp, err := s.httpClient.R().
 		SetBody(req.Items).
 		Post("/order/createOrders")
 	if err != nil {
-		return err
+		return
 	}
 
 	if err = json.Unmarshal(resp.Body(), &res); err != nil {
-		return err
+		return
 	}
-	return nil
+	message := ""
+	if res.Message != nil {
+		message = *res.Message
+	}
+	err = ErrorWrap(res.Code, message)
+	if err != nil {
+		return
+	}
+	return res.Data, nil
 }

@@ -26,7 +26,7 @@ func Test_webImageEditorService_PushOrders(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := diy99Client.Services.WebImageEditor.PushOrders(tt.req); (err != nil) != tt.wantErr {
+			if _, err := diy99Client.Services.WebImageEditor.PushOrders(tt.req); (err != nil) != tt.wantErr {
 				t.Errorf("PushOrders() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
