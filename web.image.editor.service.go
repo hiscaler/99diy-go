@@ -18,7 +18,8 @@ const (
 )
 
 const (
-	MugTemplateId = 1 // 马克杯模板
+	Mug11ozTemplateId = 3 // 马克杯模板（11oz）
+	Mug15ozTemplateId = 4 // 马克杯模板（15oz）
 )
 
 type WebImageEditorOrderItemData struct {

@@ -41,9 +41,9 @@ func NewDiy99(cfg config.Config) *Diy99 {
 			"User-Agent":   userAgent,
 		})
 	if cfg.Sandbox {
-		httpClient.SetBaseURL("http://8.129.218.196:9199")
+		httpClient.SetBaseURL("https://admin.jvcustom.hnrjyc.com/yd/draw-service")
 	} else {
-		httpClient.SetBaseURL("http://8.129.218.196:9199")
+		httpClient.SetBaseURL("https://admin.jvcustom.hnrjyc.com/yd/draw-service")
 	}
 
 	httpClient.

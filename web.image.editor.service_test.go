@@ -13,7 +13,7 @@ func Test_webImageEditorService_PushOrders(t *testing.T) {
 				{
 					OrderNumber:           "PO001",
 					OrderKey:              "1",
-					TemplateId:            MugTemplateId,
+					TemplateId:            Mug11ozTemplateId,
 					PreviewViewPictureURL: "https://www.example.com/1.jpg",
 					CallbackURL:           "https://api.example.com/callback",
 					Data: []WebImageEditorOrderItemData{
