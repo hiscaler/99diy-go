@@ -34,7 +34,7 @@ func NewDiy99(cfg config.Config) *Diy99 {
 	}
 	httpClient := resty.
 		New().
-		SetDebug(diy99Client.config.Debug).
+		SetDebug(cfg.Debug).
 		SetHeaders(map[string]string{
 			"Content-Type": "application/json",
 			"Accept":       "application/json",
