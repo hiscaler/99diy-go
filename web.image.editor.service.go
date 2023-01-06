@@ -65,7 +65,7 @@ func (m WebImageEditorOrderItem) Validate() error {
 	return validation.ValidateStruct(&m,
 		validation.Field(&m.OrderNumber, validation.Required.Error("订单号不能为空")),
 		validation.Field(&m.OrderKey, validation.Required.Error("订单项目 ID 不能为空")),
-		validation.Field(&m.TemplateId, validation.Required.Error("模板不能为空")),
+		validation.Field(&m.TemplateId, validation.In(Mug11ozTemplateId, Mug15ozTemplateId).Error("无效的模板")),
 		validation.Field(&m.PreviewViewPictureURL,
 			validation.Required.Error("预览图地址不能为空"),
 			is.URL.Error("无效的预览图地址"),
@@ -105,7 +105,7 @@ func (s webImageEditorService) PushOrders(req WebImageEditorOrderRequest) (order
 		Result  bool    `json:"result"`
 		Code    int     `json:"code"`
 		Message *string `json:"msg"`
-		Data    int     `json:"data"`
+		Data    int     `json:"data"` // OrderId
 	}{}
 	resp, err := s.httpClient.R().
 		SetBody(req.Items).
