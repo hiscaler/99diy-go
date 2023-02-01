@@ -16,6 +16,7 @@ const (
 
 const (
 	OK                   = 200 // 无错误
+	BadRequestError      = 400 // Bad Request
 	ServiceNotFoundError = 404 // 服务不存在
 	InternalError        = 500 // 内部错误，数据库异常
 )
@@ -101,6 +102,10 @@ func ErrorWrap(code int, message string) error {
 	}
 
 	switch code {
+	case BadRequestError:
+		if message == "" {
+			message = "Bad Request"
+		}
 	case ServiceNotFoundError:
 		if message == "" {
 			message = "服务不存在"

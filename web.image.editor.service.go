@@ -59,6 +59,7 @@ type WebImageEditorOrderItem struct {
 	PreviewViewPictureURL string                        `json:"preViewPic"`  // 预览图
 	CallbackURL           string                        `json:"callBackUrl"` // 回调地址
 	Data                  []WebImageEditorOrderItemData `json:"data"`        // 订单项数据
+	State                 map[string]interface{}        `json:"state"`       // 附带信息
 }
 
 func (m WebImageEditorOrderItem) Validate() error {
@@ -102,11 +103,16 @@ func (s webImageEditorService) PushOrders(req WebImageEditorOrderRequest) (order
 	}
 
 	res := struct {
-		Result  bool    `json:"result"`
-		Code    int     `json:"code"`
-		Message *string `json:"msg"`
-		Data    int     `json:"data"` // OrderId
+		Result  bool        `json:"result"`
+		Code    int         `json:"code"`
+		Message *string     `json:"msg"`
+		Data    interface{} `json:"data"` // OrderId or other
 	}{}
+	for i, item := range req.Items {
+		if item.State == nil {
+			req.Items[i].State = make(map[string]interface{}, 0)
+		}
+	}
 	resp, err := s.httpClient.R().
 		SetBody(req.Items).
 		Post("/order/createOrders")
@@ -117,13 +123,27 @@ func (s webImageEditorService) PushOrders(req WebImageEditorOrderRequest) (order
 	if err = json.Unmarshal(resp.Body(), &res); err != nil {
 		return
 	}
-	message := ""
-	if res.Message != nil {
-		message = *res.Message
+	if res.Result == false {
+		message := ""
+		if res.Message != nil {
+			message = *res.Message
+		}
+		code := res.Code
+		if code == 0 {
+			code = resp.StatusCode()
+		}
+		err = ErrorWrap(code, message)
+		if err != nil {
+			return
+		}
 	}
-	err = ErrorWrap(res.Code, message)
-	if err != nil {
-		return
+
+	switch res.Data.(type) {
+	case int:
+		return res.Data.(int), nil
+	case float64:
+		return int(res.Data.(float64)), nil
+	default:
+		return 0, errors.New("未返回有效的订单号")
 	}
-	return res.Data, nil
 }
