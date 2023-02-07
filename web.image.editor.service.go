@@ -18,8 +18,9 @@ const (
 )
 
 const (
-	Mug11ozTemplateId = 3 // 马克杯模板（11oz）
-	Mug15ozTemplateId = 4 // 马克杯模板（15oz）
+	Mug11ozTemplateId         = 3 // 马克杯模板（11oz）
+	Mug15ozTemplateId         = 4 // 马克杯模板（15oz）
+	AcrylicOrnamentTemplateId = 8 // 亚克力摆件模板
 )
 
 type WebImageEditorOrderItemData struct {
@@ -66,7 +67,7 @@ func (m WebImageEditorOrderItem) Validate() error {
 	return validation.ValidateStruct(&m,
 		validation.Field(&m.OrderNumber, validation.Required.Error("订单号不能为空")),
 		validation.Field(&m.OrderKey, validation.Required.Error("订单项目 ID 不能为空")),
-		validation.Field(&m.TemplateId, validation.In(Mug11ozTemplateId, Mug15ozTemplateId).Error("无效的模板")),
+		validation.Field(&m.TemplateId, validation.In(Mug11ozTemplateId, Mug15ozTemplateId, AcrylicOrnamentTemplateId).Error("无效的模板")),
 		validation.Field(&m.PreviewViewPictureURL,
 			validation.Required.Error("预览图地址不能为空"),
 			is.URL.Error("无效的预览图地址"),
