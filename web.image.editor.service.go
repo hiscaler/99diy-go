@@ -23,6 +23,8 @@ const (
 	AcrylicOrnamentNameTitleTemplateId = 8  // 亚克力摆件模板（Name + Title）
 	AcrylicOrnamentNameTemplateId      = 44 // 亚克力摆件模板（Name）
 	WoodenWindChimeTemplateId          = 70 // 木质风铃
+	JewelryBoxLetterFlowerTemplateId   = 79 // 首饰盒（字母和花）
+	jewelryBoxMonthFlowerTemplateId    = 80 // 首饰盒（月份花）
 )
 
 type WebImageEditorOrderItemData struct {
@@ -75,6 +77,8 @@ func (m WebImageEditorOrderItem) Validate() error {
 			AcrylicOrnamentNameTitleTemplateId,
 			AcrylicOrnamentNameTemplateId,
 			WoodenWindChimeTemplateId,
+			JewelryBoxLetterFlowerTemplateId,
+			jewelryBoxMonthFlowerTemplateId,
 		).Error("无效的模板")),
 		validation.Field(&m.PreviewViewPictureURL,
 			validation.Required.Error("预览图地址不能为空"),
