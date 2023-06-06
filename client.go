@@ -89,6 +89,11 @@ func (diy *Diy99) SetDebug(v bool) *Diy99 {
 	return diy
 }
 
+func (diy *Diy99) SetBaseUrl(url string) *Diy99 {
+	diy.httpClient.SetBaseURL(url)
+	return diy
+}
+
 // SetLogger 设置日志器
 func (diy *Diy99) SetLogger(logger Logger) *Diy99 {
 	diy.logger = logger
