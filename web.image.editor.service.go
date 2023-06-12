@@ -58,6 +58,12 @@ type WebImageEditorOrderItem struct {
 	CallbackURL           string                        `json:"callBackUrl"` // 回调地址
 	Data                  []WebImageEditorOrderItemData `json:"data"`        // 订单项数据
 	State                 map[string]interface{}        `json:"state"`       // 附带信息
+	Editor                struct {
+		Width  float64 `json:"width"`
+		Height float64 `json:"height"`
+		DPI    int     `json:"dpi"`
+		Remark string  `json:"remark"`
+	} `json:"editor"`
 }
 
 func (m WebImageEditorOrderItem) Validate() error {
