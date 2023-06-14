@@ -13,10 +13,11 @@ import (
 type webImageEditorService service
 
 const (
-	ImageType           = "image"   // 图片
-	TextType            = "text"    // 文本
-	BackgroundColorType = "bgColor" // 背景颜色
-	BackgroundImageType = "bgImage" // 背景图
+	ImageType                = "image"        // 图片
+	TextType                 = "text"         // 文本
+	BackgroundColorType      = "bgColor"      // 背景颜色
+	BackgroundImageType      = "bgImage"      // 背景图
+	BackgroundColorImageType = "bgColorImage" // 背景颜色图片
 )
 
 type WebImageEditorOrderItemData struct {
@@ -30,7 +31,7 @@ type WebImageEditorOrderItemData struct {
 
 func (m WebImageEditorOrderItemData) Validate() error {
 	return validation.ValidateStruct(&m,
-		validation.Field(&m.Type, validation.Required.Error("资源类型不能为空"), validation.In(ImageType, TextType, BackgroundColorType, BackgroundImageType).Error("无效的资源类型")),
+		validation.Field(&m.Type, validation.Required.Error("资源类型不能为空"), validation.In(ImageType, TextType, BackgroundColorType, BackgroundImageType, BackgroundColorImageType).Error("无效的资源类型")),
 		validation.Field(&m.Font, validation.When(m.Type == TextType, validation.Required.Error("字体不能为空"))),
 		validation.Field(&m.Color, validation.When(m.Type == TextType, validation.Required.Error("字体颜色不能为空"),
 			validation.WithContext(func(ctx context.Context, value interface{}) error {
@@ -46,7 +47,7 @@ func (m WebImageEditorOrderItemData) Validate() error {
 		)),
 
 		validation.Field(&m.Content, validation.When(m.Type == TextType, validation.Required.Error("定制内容不能为空"))),
-		validation.Field(&m.URL, validation.When(m.Type == ImageType, validation.Required.Error("图片地址不能为空"), is.URL.Error("无效的图片地址"))),
+		validation.Field(&m.URL, validation.When(m.Type == ImageType || m.Type == BackgroundColorImageType, validation.Required.Error("图片地址不能为空"), is.URL.Error("无效的图片地址"))),
 		validation.Field(&m.BgColor, validation.When(m.Type == BackgroundColorType, validation.Required.Error("背景颜色值不能为空"))),
 	)
 }
