@@ -16,6 +16,7 @@ const (
 	ImageType           = "image"   // 图片
 	TextType            = "text"    // 文本
 	BackgroundColorType = "bgColor" // 背景颜色
+	BackgroundImageType = "bgImage" // 背景图
 )
 
 type WebImageEditorOrderItemData struct {
@@ -29,7 +30,7 @@ type WebImageEditorOrderItemData struct {
 
 func (m WebImageEditorOrderItemData) Validate() error {
 	return validation.ValidateStruct(&m,
-		validation.Field(&m.Type, validation.Required.Error("资源类型不能为空"), validation.In(ImageType, TextType, BackgroundColorType).Error("无效的资源类型")),
+		validation.Field(&m.Type, validation.Required.Error("资源类型不能为空"), validation.In(ImageType, TextType, BackgroundColorType, BackgroundImageType).Error("无效的资源类型")),
 		validation.Field(&m.Font, validation.When(m.Type == TextType, validation.Required.Error("字体不能为空"))),
 		validation.Field(&m.Color, validation.When(m.Type == TextType, validation.Required.Error("字体颜色不能为空"),
 			validation.WithContext(func(ctx context.Context, value interface{}) error {
