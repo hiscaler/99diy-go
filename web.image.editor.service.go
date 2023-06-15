@@ -61,6 +61,7 @@ type WebImageEditorOrderItem struct {
 	Data                  []WebImageEditorOrderItemData `json:"data"`        // 订单项数据
 	State                 map[string]interface{}        `json:"state"`       // 附带信息
 	Editor                struct {
+		SKU    string  `json:"sku"`
 		Width  float64 `json:"width"`
 		Height float64 `json:"height"`
 		DPI    int     `json:"dpi"`
