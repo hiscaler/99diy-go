@@ -21,12 +21,13 @@ const (
 )
 
 type WebImageEditorOrderItemData struct {
-	Type    string `json:"type"`    // 资源类型
-	Font    string `json:"font"`    // 字体
-	Color   string `json:"color"`   // 字体颜色
-	Content string `json:"content"` // 定制内容
-	URL     string `json:"url"`     // 图片地址
-	BgColor string `json:"bgColor"` // 背景颜色
+	Type      string `json:"type"`      // 资源类型
+	Font      string `json:"font"`      // 字体
+	Color     string `json:"color"`     // 字体颜色
+	Content   string `json:"content"`   // 定制内容
+	URL       string `json:"url"`       // 图片地址
+	BgColor   string `json:"bgColor"`   // 背景颜色
+	Direction string `json:"direction"` // 当前资源的字段名称
 }
 
 func (m WebImageEditorOrderItemData) Validate() error {
