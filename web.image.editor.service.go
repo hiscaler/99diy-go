@@ -68,6 +68,7 @@ type WebImageEditorOrderItem struct {
 		DPI    int     `json:"dpi"`
 		Remark string  `json:"remark"`
 	} `json:"editor"`
+	ExtraCustomizeInfo string `json:"extraCustomizeInfo"` // 额外的定制信息
 }
 
 func (m WebImageEditorOrderItem) Validate() error {
